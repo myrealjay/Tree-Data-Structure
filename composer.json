@@ -1,0 +1,17 @@
+{
+    "name": "mac/playground",
+    "autoload": {
+        "psr-4": {
+            "Playground\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nwachukwu James",
+            "email": "james.nwachukwu@patricia.com.ng"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
