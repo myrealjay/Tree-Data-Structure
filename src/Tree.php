@@ -30,65 +30,7 @@ class Tree{
 
         while(!$hasReachedEnd){
             if($current->val == $val){
-                if(!$current->left && !$current->right){ //since no left and right nodes just remove it
-                    if($parent == $current){
-                        $this->root = null;
-                    }
-                    else if($current == $parent->left){
-                        $parent->left = null;
-                    }
-                    else if($current == $parent->right){
-                        $parent->parent = null;
-                    }
-                }
-                else if($current->left && !$current->right){ //since it has left node and not right then just replace the left node
-                    if($current == $parent->left){
-                        $parent->left = $current->left;
-                    }
-                    if($current == $parent->right){
-                        $parent->right = $current->left;
-                    }
-                }
-                else if($current->right && !$current->left){
-                    if($current == $parent->left){
-                        $parent->left = $current->right;
-                    }
-                    if($current == $parent->right){
-                        $parent->right = $current->right;
-                    }
-                }
-                else if($current->left && $current->right){ //it has left and right node, so we have to find the least node in the right
-                    //and put it in the position we are removing this node from
-                    //minding if the node has a right  node, it has to become the left node of where it is being moved from
-                    $childParent = $current->right;
-                    $least = $childParent;
-                    $hasMoreLeftNode = $least->left;
-                    while($hasMoreLeftNode){
-                        if($least->val > $least->left->val){
-                            $childParent = $least;
-                            $least = $least->left;
-                            $hasMoreLeftNode = $least->left;
-                        }
-                    }
-
-                    if($childParent != $least){
-                        if($least->right){
-                            $childParent->left = $least->right;
-                        }
-
-                        $least->right = $current->right;
-                    }
-
-                    if($parent->left == $current){
-                        $parent->left = $least;
-                    }
-                    else if($parent->right == $current){
-                        $parent->right = $least;
-                    }
-                    $least->left = $current->left;
-                    
-                }
-
+                $this->remove($current,$parent);
                 $this->size -= 1;
                 $hasReachedEnd = true;
                 return true;
@@ -229,6 +171,83 @@ class Tree{
         }
     
         return $result;
+    }
+
+    /**
+     *
+     * @param $current
+     * @param $parent
+     * @return void
+     */
+    protected function remove($current, $parent) : void{
+        if(!$current->left && !$current->right){ //since no left and right nodes just remove it
+            if($parent == $current){
+                $this->root = null;
+            }
+            else if($current == $parent->left){
+                $parent->left = null;
+            }
+            else if($current == $parent->right){
+                $parent->parent = null;
+            }
+        }
+        else if($current->left && !$current->right){ //since it has left node and not right then just replace the left node
+            if($current == $parent->left){
+                $parent->left = $current->left;
+            }
+            if($current == $parent->right){
+                $parent->right = $current->left;
+            }
+        }
+        else if($current->right && !$current->left){
+            if($current == $parent->left){
+                $parent->left = $current->right;
+            }
+            if($current == $parent->right){
+                $parent->right = $current->right;
+            }
+        }
+        else if($current->left && $current->right){ 
+           $this->repositionNodes($current,$parent);
+        }
+    }
+
+    /**
+     * it has left and right node, so we have to find the least node in the right
+     * and put it in the position we are removing this node from
+     * minding if the node has a right  node, it has to become the left node of where it is being moved from
+     *
+     * @param $current
+     * @param $parent
+     * @return void
+     */
+    protected function repositionNodes($current,$parent) : void{
+        $childParent = $current->right;
+        $least = $childParent;
+        $hasMoreLeftNode = $least->left;
+        while($hasMoreLeftNode){
+            if($least->val > $least->left->val){
+                $childParent = $least;
+                $least = $least->left;
+                $hasMoreLeftNode = $least->left;
+            }
+        }
+
+        if($childParent != $least){
+            if($least->right){
+                $childParent->left = $least->right;
+            }
+
+            $least->right = $current->right;
+        }
+
+        if($parent->left == $current){
+            $parent->left = $least;
+        }
+        else if($parent->right == $current){
+            $parent->right = $least;
+        }
+        $least->left = $current->left;
     }
 
     /**
